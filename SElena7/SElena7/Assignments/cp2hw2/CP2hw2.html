@@ -1,0 +1,262 @@
+<html>
+<head>
+<title>Draw</title>
+<meta charset="UTF-8">
+<style>
+body{
+	background-color:azure;
+	font-family: Helvetica;
+}
+button{
+	margin-top: 10px;
+	border-radius: 1em;
+	background-color:azure;
+	color: blueviolet;
+}
+#canvas {
+	background-color: white;
+	display: inline-block;
+	box-sizing: border-box;
+	border: 1px solid black;
+    margin-top:5px;
+}
+#stickers {
+	display: inline-block;
+	width: 50px;
+	height: 50px;
+}
+.sticker {
+	display: inline-block;
+	box-sizing: border-box;
+	width: 50px;
+	margin: 2px;
+}
+.color {
+	display:inline-block;
+	box-sizing: border-box;
+	width: 48px;
+	height: 30px;
+	border: 1px solid black;
+	margin: 2px 1px 0px 1px;
+	margin-right:44px;
+	/*position:absolute;
+	top:50px;
+    left:100px;*/
+}
+
+
+#thickness{
+    border-radius:1em;
+	text-align: center;
+	height:0px;
+	width: 200px;
+	border:0px solid black;
+	display: block;
+    background-color:blueviolet; 
+}
+
+.shapes{
+	display:block;
+	margin-bottom:10px;
+}
+h1{
+	text-align:center;
+	color: blueviolet;
+	font-family: Helvetica;
+	text-transform: uppercase;
+}
+
+#shapess{
+	
+	border-radius:1em;
+	text-align: center;
+	height: 570px;
+	width:470px;
+	border:0px solid black;
+	display:inline-block;
+    background-color:blueviolet; 	
+    margin-left:60px;
+    padding: 10px;
+}
+
+</style>
+</head>
+<body>
+
+<h1>Drawing board!</h1>
+<script>
+var colorNames = ["black", "gray", "silver", "white", "maroon", "red", "olive", "yellow", "green",
+"lime", "teal", "aqua", "navy", "blue", "purple", "fuchsia"];
+for (var i = 0; i < 16; i++) {
+document.write(`<div id="${i}" class="color" style="background-color:
+${colorNames[i]}"  onclick="getColor(this)"></div>`);
+}
+</script>
+<canvas id="canvas" width="800" height="600" ondrop="Drop(event)" ondragover="DragOver(event)"></canvas>
+<div id="stickers">
+<img id="picture1" class="sticker" dragable="true" ondragstart="StartDrag(event)" src="http://clipart-library.com/data_images/487831.png">
+<img id="picture2" class="sticker" dragable="true" ondragstart="StartDrag(event)" src="http://clipart-library.com/data_images/487787.png">
+<img id="picture3" class="sticker" dragable="true" ondragstart="StartDrag(event)" src="http://clipart-library.com/data_images/487743.png">
+<img id="picture4" class="sticker" dragable="true" ondragstart="StartDrag(event)" src="http://clipart-library.com/data_images/487741.png">
+<img id="picture5" class="sticker" dragable="true" ondragstart="StartDrag(event)" src="http://clipart-library.com/data_images/487815.png">
+<img id="picture6" class="sticker" dragable="true" ondragstart="StartDrag(event)" src="http://clipart-library.com/data_images/402767.png">
+<img id="picture7" class="sticker" dragable="true" ondragstart="StartDrag(event)" src="http://clipart-library.com/data_images/363964.gif">
+<img id="picture8" class="sticker" dragable="true" ondragstart="StartDrag(event)" src="http://clipart-library.com/data_images/487785.png">
+<img id="picture9" class="sticker" dragable="true" ondragstart="StartDrag(event)" src="http://clipart-library.com/data_images/487810.jpg">
+<img id="picture10"class="sticker" dragable="true" ondragstart="StartDrag(event)" src="http://clipart-library.com/image_gallery/464509.png">
+<img id="picture11"class="sticker" dragable="true" ondragstart="StartDrag(event)" src="http://clipart-library.com/image_gallery/464541.jpg">
+
+
+</div>
+
+<div id="shapess">
+<label for="thickness1">Chose your brush size</label>
+<select id="thickness1" onclick="draw()">
+
+	<option>1</option>
+	<option selected="">5</option>
+	<option>30</option>	
+
+</select>
+
+	<p style="font-family:Helvetica">Shapes:</p>
+	<div class="shapes" id="Shapes1"><img id="shapes" src="circle.png" onclick="darwAcircle()"></div>
+	<div class="shapes" id="Shapes2"> <img id='shapes2' src='rectangle.png'onclick=" drawArectangle()"></div>
+
+<div id = "bStyle">
+	<label for="brushStyle">Chose your brush:</label>
+	<select id='brushStyle' onclick="draw()">
+		<option>round</option>
+        <option>butt</option>
+	    <option>square</option>
+	</select>
+<p>Limited edition stickers:</p>
+<img id="picture12" class="sticker" dragable="true" ondragstart="StartDrag(event)" src="blu.png">
+<img id="picture13" class="sticker" dragable="true" ondragstart="StartDrag(event)" src="anakin.png">
+<img id="picture14" class="sticker" dragable="true" ondragstart="StartDrag(event)" src="yoda.png">
+<img id="picture15" class="sticker" dragable="true" ondragstart="StartDrag(event)" src="r2d2png.png">
+<img id="picture16" class="sticker" src="er.png" onclick="erase()">
+</div>
+<button onclick="clearCanvas()">clear all</button>
+
+</div>
+
+<script>
+
+
+var canvas = document.getElementById('canvas')
+//variables
+canvas.height
+canvas.width
+var painting = false
+var ctx=canvas.getContext('2d')
+var palete=colorNames
+var i
+
+
+/**************************************************************Shapes***************************************************************/
+
+
+
+function darwAcircle(){
+ctx.beginPath();
+ctx.arc(100, 75, 50, 0, 2 * Math.PI);
+ctx.stroke();
+}
+
+
+
+function drawArectangle(){
+ctx.beginPath();
+ctx.rect(20, 20, 150, 100);
+ctx.stroke();
+}
+
+
+
+/**************************************************Set drawing variables***************************************************************/
+
+function startPosition(){
+	painting = true
+}
+
+function endPosition(){
+	painting = false
+}
+
+function getColor(mycolor){
+	console.log(mycolor)
+	i = mycolor.id;
+	console.log(i)    
+}
+/************************************************************Eraser*****************************************************************/
+//eraser
+function erase(){
+  i=3
+  size = 30
+  draw()
+  }
+/***********************************************************Clear******************************************************************/
+function clearCanvas(){
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+
+
+/***********************************************************Free Drawing******************************************************************/
+
+function draw(e){
+    
+    //thikness of brush
+    var choiceBox = document.getElementById('thickness1')
+    var myoption = choiceBox.value
+    //type of the brush 
+    var choiceBox2 = document.getElementById('brushStyle')
+    var myoption2 = choiceBox2.value 
+    //chosenColorName
+    var colorx=colorNames[i]
+    
+	if(!painting)return
+	
+	var size = myoption
+    ctx.lineWidth = size     //brush size
+	ctx.lineCap = myoption2 //brush style
+    ctx.strokeStyle=colorx //color 
+	
+	ctx.lineTo(e.clientX, e.clientY)
+	ctx.stroke()
+	ctx.beginPath()
+	ctx.moveTo(e.clientX, e.clientY)
+}
+
+canvas.addEventListener('mousedown',startPosition)
+canvas.addEventListener('mouseup',endPosition)
+canvas.addEventListener('mousemove', draw)
+
+/*****************************************************Stickers************************************************************************/
+ function DragOver(ev) {
+    // the elements can't ususaly be dropped into other elements so we are perventing the usual dealing with the element
+  ev.preventDefault();
+}
+
+function StartDrag(ev) {
+
+  ev.dataTransfer.setData("text", ev.target.id);
+  // we get the id of the picture aka draggable element
+}
+
+function Drop(ev) {
+  ev.preventDefault();
+  var data = ev.dataTransfer.getData("text");
+  console.log(data)
+  var slika=document.getElementById(data);
+  console.log(slika)
+  
+  ctx.drawImage(slika, ev.clientX, ev.clientY , 80, 80);
+  // distance from the top and left// size of picture
+}
+
+/*****************************************************************************************************************************/
+
+</script>
+</div>
+</body></html>

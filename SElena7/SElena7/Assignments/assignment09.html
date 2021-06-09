@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Assignment09</title>
+
+<script type="text/javascript">
+    function addName(){
+        var theName=document.getElementById("getName").value;
+    var str=theName.split(' ');
+    var len=str.length;
+    var sel=document.getElementById("listofnames");
+    var option=document.createElement("option");
+    //var same=document.getElementById("myoption").value;
+    //for each word
+    
+    if(same())
+    {
+        for(var i=0;i<len;i++){
+    var stringArr=str[i];
+    var len1=stringArr.length;
+    //for the letter
+    for(var j=0;j<len1;j++){
+    
+     if(stringArr.charAt(0)==stringArr.charAt(0).toUpperCase()){
+       
+      option.innerHTML=theName;
+                sel.add(option);
+      
+          
+     }
+
+     else{
+     //turn to red
+      option.innerHTML=theName;
+      option.style.backgroundColor='red';
+     
+         sel.add(option);
+      
+     }//end else
+    }//end inner for
+    }//end for
+
+}//if
+    
+}//end func
+ 
+
+
+function same(){
+    var theNames=document.getElementById("getName");
+    var opt=document.getElementsByTagName("option");
+
+    for(var i=0;i<opt.length;i++){
+        if(opt[i].value==theNames.value){
+            return false;
+        }
+        
+    }//end for
+return true;
+
+}//end func
+
+
+</script>
+
+</head>
+<body>
+<form>
+    <label for="name">Enter a name:</label>
+    <input type="text" name="name" id="getName">
+    <select id="listofnames">
+        <option id="myoption"></option>
+    </select>
+
+    <button type="button" onclick="addName()">ADD</button>
+    <button type="button">CLEAR</button>
+</form>
+</body>
+</html>

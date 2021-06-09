@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>DragAndDrop</title>
+
+<style type="text/css">
+	
+ .box{
+ 	width: 400px;
+ 	height:400px;
+    display: flex;
+    flex-wrap: wrap;
+ }
+
+
+ .box div{
+ 	display: flex;
+ 	float: left;
+ 	width: 100px;
+ 	height: 100px;
+ 	border: 2px solid red;
+ 	justify-content: center;
+ 	align-items:center;
+ 	margin: 5px;
+ }
+
+.item{
+
+  display: flex;
+  width:50px;
+  height:50px;
+  background-color: seagreen;
+  justify-content: center;
+  align-items: center;
+  font-size:30px;
+  color: yellow;
+  user-select: none; 
+}
+
+
+
+</style>
+<script type="text/javascript">
+	
+ function ItemDragStart(event){
+  
+  console.log("Dragging", event.target.id);
+  event.dataTransfer.setData("text",event.target.id) //the content is being held by the event traget 
+ 
+ }//end ItemDragStart 
+
+
+function ItemDragOver(event){
+
+var targetBox=event.target; //box which triggered an event
+console.log("drag over", targetBox.id);
+
+event.preventDefault();
+}//end ItemDragOver
+
+
+function ItemDrop(event){
+ 
+    console.log("dropped");
+    var targetBox = event.target;
+    targetBox.style.backgroundColor = "";
+    var draggedId = event.dataTransfer.getData("text");
+    var draggedItem = document.getElementById(draggedId);
+    targetBox.appendChild(draggedItem);
+    event.preventDefault();
+} //end ItemDrop
+
+
+function ItemDragEnter(event){
+ var targetBox = event.target;
+ targetBox.style.backgroundColor="silver";
+ event.preventDefault();
+}//end ItemDragEnter
+
+function ItemDragLeave(event){
+ var targetBox = event.target;
+ targetBox.style.backgroundColor="";
+ event.preventDefault();
+}//end ItemDragLeave
+
+    function setnames(){
+    	var numero1=document.querySelector("#box1")
+        console.log(numero1)    	
+        
+        
+    }
+    
+setnames()
+
+</script>
+</head>
+<body>
+
+
+<div id="GridBOX" class="box">
+
+
+<div id="box1" class="box" ondragover="ItemDragOver(event)" ondrop="ItemDrop(event)">
+    <div id="item1" class="item" draggable="true" ondragstart="ItemDragStart(event)">B</div>
+</div>
+
+<div id="box2" class="box" ondragover="ItemDragOver(event)" ondrop="ItemDrop(event)">
+    <div id="item2" class="item" draggable="true" ondragstart="ItemDragStart(event)">C</div>
+</div>
+<div id="box3" class="box" ondragover="ItemDragOver(event)" ondrop="ItemDrop(event)">
+    <div id="item3" class="item" draggable="true" ondragstart="ItemDragStart(event)">D</div>
+</div>
+
+<div id="box4" class="box" ondragover="ItemDragOver(event)" ondrop="ItemDrop(event)">
+    <div id="item4" class="item" draggable="true" ondragstart="ItemDragStart(event)">E</div>
+</div>
+<div id="box5" class="box" ondragover="ItemDragOver(event)" ondrop="ItemDrop(event)">
+    <div id="item5" class="item" draggable="true" ondragstart="ItemDragStart(event)">G</div>
+</div>
+
+<div id="box6" class="box" ondragover="ItemDragOver(event)" ondrop="ItemDrop(event)">
+    <div id="item6" class="item" draggable="true" ondragstart="ItemDragStart(event)">H</div>
+</div>
+<div id="box7" class="box" ondragover="ItemDragOver(event)" ondrop="ItemDrop(event)">
+    <div id="item7" class="item" draggable="true" ondragstart="ItemDragStart(event)">F</div>
+</div>
+
+<div id="box8" class="box" ondragover="ItemDragOver(event)" ondrop="ItemDrop(event)">
+    <div id="item8" class="item" draggable="true" ondragstart="ItemDragStart(event)">A</div>
+</div>
+
+<script type="text/javascript">
+	
+
+	for ( j = 0; j <=0; j++) {
+	document.write(
+
+		`<div id="boxx${j}"
+             
+         class="box"
+         ondragover="ItemDragOver(event)"
+         ondrop="ItemDrop(event)"
+         ondragenter="ItemDragEnter(event)"
+         ondragleave="ItemDragLeave(event)"
+        >
+        </div>`
+		);//end of documentwrite()
+}//endfor
+    
+</script>
+</body>
+</html>

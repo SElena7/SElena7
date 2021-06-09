@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>yeet</title>
+    <link href='https://fonts.googleapis.com/css?family=Aldrich' rel='stylesheet'>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Sofia&effect=fire">
+    <script src="minefielddd.js"></script>
+</head>
+<body>
+<h1>Welcome to Minesweeper!</h1>
+<button id="instr" onclick="showIns()">Instructions</button>
+<button id="startbttn" onclick="CountDown();toggle();">Start!</button>
+<p>Countdown:</p>
+<p id="cdown"></p>
+<p id='flagslefttext'>Flags left:<span id="flagsleft"></span></p>
+<div id="res" class="font-effect-fire"></div>
+<div id="g" class="grid"></div>
+
+<p id="select">Choose difficulty!</p>
+<select id="selectBox" onclick="getDifficulty()">	
+    <option value="medium">Medium</option>
+    <option value="hard">Hard</option>
+    <option value="easy">Easy</option>
+</select>
+
+<style type="text/css">
+	body{
+		font-family: 'Aldrich';
+		font-size:22px;
+		text-shadow: 2px 2px #ff0000;
+		color: #FF8000;
+		text-shadow: 2px;
+		text-align: center;
+		background-image:url(starysky.jpg);
+	    
+	}
+	.x{
+		/*background-color: orange;*/
+	}
+    
+    .grid{
+        
+		margin-left: 530px;
+		margin-right: 500px;
+		background-color: grey;
+		width: 440px;
+		height:440px;
+	    display: flex;
+	    flex-wrap: wrap;
+	    border: 10px solid #dcd6bc;
+        margin-top:60px;
+	}
+	.grid div{
+      width: 40px;
+      height:40px;
+      border:2px solid black;
+	  
+	 }
+	 
+	.bomb{
+	 	background-color: black;
+	 }
+	 
+	.checked{
+	 	background-color: #999999;
+	 }
+	
+     p{
+	 	text-align: center;
+	 }
+     #selectBox{
+	 	position: fixed;
+	 	float: left;
+	    left:100px;
+	    bottom: 300px;
+	    background-color: red;
+	    color:#FF8000;
+	    width: 10%;
+	    font-family: 'Aldrich';
+	 }
+     #select{
+     	
+     	position: fixed;
+        bottom: 310px;
+        left:100px;
+     }
+     #startbttn, #instr{
+     	
+     	left:5px;
+     	border: 0px solid black;
+     	border-radius:25px;
+     	background-color:red;
+     	color: white;
+     	font-family: 'Aldrich';
+		font-size:22px;
+		text-shadow: 2px 2px #ff0000;
+     }
+     #startbttn:hover{
+      background-color:blue;
+     }
+    
+     #res{
+     	margin:10px;
+     	font-size: 50px;
+     }
+
+
+</style>
+<script type="text/javascript">
+	
+    //global variables 
+    let width=10
+    let height=10
+    let grid = document.querySelector('.grid')
+    let squares=[];
+    let flags = 0
+    let isGameOver = false
+    let Leftflags=document.getElementById('flagsleft')
+    let result= document.getElementById('res')
+    let victory=false
+    var isPlaying=false
+    var audio = new Audio('starwars.mp3');
+    var audio1=new Audio('loser.mp3');
+    var audio2=new Audio('winner.mp3');
+    
+ 
+ //instructions 
+ function showIns(){window.alert('Left click->unveil ;Right click->add flag; Win by adding flags to all the bomb fileds..Good luck and MAY THE FORCE BE WITH YOU! ')}
+ 
+ 
+ //change # of bombs
+ function getDifficulty(){
+ 	let bombs=null
+   let diff=document.getElementById('selectBox');
+   console.log(diff.value)
+   if(diff.value='easy'){
+   	bombs=20
+    return bombs
+   }
+   else if(diff.value='medium'){
+   	bombs=30
+    return bombs
+   }
+   else if(diff.value='hard'){
+   	bombs=40
+    return bombs
+   }
+
+ 
+ }
+
+let bombs=getDifficulty()
+
+//make the unveiled array 
+  function generateArray(){
+   var gameArray=[]
+   var minefied=new Minefield(width,height,getDifficulty()) //TUKAAAA
+   
+   var str=minefied.toString();
+   console.log(str)
+   return str;
+
+ }
+
+//create the board 
+  function createBoard(){
+   let boardArray=generateArray()
+     for(var i=0;i<width*height;i++){
+     
+      let square=document.createElement('div');
+       grid.append(square);
+       square.setAttribute('id',i);
+       square.classList.add(boardArray[i]); //add a symbol to each square
+       squares.push(square);
+       squares[i].setAttribute('data',boardArray[i]);       
+       
+        //left click
+        squares[i].addEventListener('click', function(e) {
+        click(event.target)
+      })
+
+        //right click
+        square.oncontextmenu = function(e) {
+        e.preventDefault()
+        addFlag(square)
+      }
+    }//end for
+         }//end func
+    
+ createBoard()   
+//left click unveil
+   function click(square){
+   
+   let currentId = square.id
+    
+    if (isGameOver) return
+    if (square.classList.contains('checked') || square.classList.contains('flag')) return 
+    if(square.classList.contains('x')){
+    	square.classList.add('bomb')
+    	gameOver(square)
+    }
+    else{
+    	if(!(square.classList.contains('0'))){
+    		square.classList.add('checked')
+    	    var number = square.getAttribute('data')
+    	    console.log(number)
+    	    square.innerHTML=number;
+           return;
+    	}
+        checkSquare(square, currentId)
+        square.classList.add('checked')
+    }
+ 	 
+    
+    }
+
+//right click flag
+  function addFlag(square){
+  	 if (isGameOver) return
+    if (!square.classList.contains('checked') && (flags < bombs)) {
+      if (!square.classList.contains('flag')) {
+        square.classList.add('flag')
+        square.innerHTML = ' 🚩'
+        flags ++
+        Leftflags.innerHTML = bombs-flags
+              checkForWin()
+      } else {
+        square.classList.remove('flag')
+        square.innerHTML = ''
+        flags --
+        flagsLeft.innerHTML = bombs- flags
+      }
+    }
+  }
+
+//is game over?
+  function gameOver(square){
+  	 res.innerHTML='BOOM! Game over🤬.'
+  	 res.style.fontSizeAdjust='100px'
+  	 isGameOver = true
+     pause();
+     play();
+     for(var i=0;i<width*height;i++){
+     	if(squares[i].classList.contains('x'))
+     		squares[i].innerHTML='💣'
+            
+     }
+  	
+     
+  	}
+
+//fan out 
+  function checkSquare(square, currentId){
+
+   const isLeftEdge=(currentId%width===0)
+   const isRightEdge=(currentId%width===9)
+   
+     setTimeout(() => {
+      if (currentId > 0 && !isLeftEdge) {
+        const newId = squares[parseInt(currentId) -1].id
+        const newSquare = document.getElementById(newId)
+        click(newSquare)
+      }
+      if (currentId > 9 && !isRightEdge) {
+        const newId = squares[parseInt(currentId) +1 -width].id
+        const newSquare = document.getElementById(newId)
+        click(newSquare)
+      }
+      if (currentId > 10) {
+        const newId = squares[parseInt(currentId -width)].id
+        const newSquare = document.getElementById(newId)
+        click(newSquare)
+      }
+      if (currentId > 11 && !isLeftEdge) {
+        const newId = squares[parseInt(currentId) -1 -width].id
+        const newSquare = document.getElementById(newId)
+        click(newSquare)
+      }
+      if (currentId < 98 && !isRightEdge) {
+        const newId = squares[parseInt(currentId) +1].id
+        const newSquare = document.getElementById(newId)
+        click(newSquare)
+      }
+      if (currentId < 90 && !isLeftEdge) {
+        const newId = squares[parseInt(currentId) -1 +width].id
+        const newSquare = document.getElementById(newId)
+        click(newSquare)
+      }
+      if (currentId < 88 && !isRightEdge) {
+        const newId = squares[parseInt(currentId) +1 +width].id
+        const newSquare = document.getElementById(newId)
+        click(newSquare)
+      }
+      if (currentId < 89) {
+        const newId = squares[parseInt(currentId) +width].id
+        const newSquare = document.getElementById(newId)
+        click(newSquare)
+      }
+    }, 10)
+  } 
+  
+ 
+ //did we win?
+ function checkForWin(){
+  let matches=0
+  
+  for(var i=0;i<squares.length;i++){
+  	if(squares[i].classList.contains('flag')&&squares[i].classList.contains('x')){
+  		matches++
+  	}
+  	if(matches===bombs){
+  		res.innerHTML="YOU WON!🥇"
+  		
+  		pause();
+  		win();
+  		
+  		return
+  	    isGameOver=true 
+  	}
+  }
+ }
+ //set time coutdown
+ let timeleft=300
+ function CountDown(){
+  const timeLeftDisplay=document.getElementById('cdown')
+  const startbutton=document.getElementById('startbttn')
+  
+  setInterval (function(){
+  	timeleft-=1
+    if(timeleft>=0 && isGameOver!=true){timeLeftDisplay.innerHTML=timeleft +"s"}
+
+    else{
+    	if(isGameOver==true){timeLeftDisplay.innerHTML="too bad"}
+      	else{timeLeftDisplay.innerHTML="time's up"
+}
+    	      isGameOver=true}
+
+  },1000)
+ }
+ //background music
+ function play(){
+  if(isGameOver==true){
+  	audio.pause();
+  	audio1.play();
+  }
+  else{
+  audio.play();
+  isPlaying=true;
+ }
+ };
+ function pause(){
+  audio.pause();
+  isPlaying=false;
+ };
+ function win(){
+  audio2.play();
+ }
+function toggle(){
+ if(isPlaying==false){
+ 	play();
+ }
+ else{
+ 	pause();
+ }
+};
+
+</script>
+</body>
+</html>
